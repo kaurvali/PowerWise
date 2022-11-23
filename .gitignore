@@ -83,3 +83,14 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+
+
+.idea/
+*.jks
+*.keystore
+
+# MacOS
+.DS_Store
+
+app/release/output.json
+.idea/codeStyles/
