@@ -68,7 +68,6 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
                     Log.e("HTTP Error", "Something went wrong")
                 } else {
                     Log.i("HTTP Result", result.toString())
-                    TODO("Do something with the results...")
                 }
             }
     }
