@@ -8,18 +8,13 @@ import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.data.PricesDB
 import ee.ut.cs.powerwise.databinding.ActivityMainBinding
-import java.time.Instant
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 
 class MainActivity : AppCompatActivity() {
 
     private val baseURL = "https://dashboard.elering.ee/api/nps/price"
-    private val timeFormat = "HH:mm"
-    private val dateFormat = "dd.MM.yyyy"
-
     private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,36 +99,8 @@ class MainActivity : AppCompatActivity() {
             dao.addData(price)
         }
         val prices = dao.loadAllPrices()
-        for (price in prices){
+        for (price in prices) {
             Log.i("DB_Data", price.price.toString() + " " + price.datetime.toString())
         }
-    }
-
-    // gets lont to ZonedDateTime
-    fun getToZonedDateTime(time: Long): ZonedDateTime {
-        return ZonedDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.of("UTC"))
-    }
-
-    // Unix Milliseconds to date in string
-    fun getTimeToString(time: Long): String {
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(timeFormat)
-        return formatter.format(
-            ZonedDateTime.ofInstant(
-                Instant.ofEpochMilli(time),
-                ZoneId.of("UTC")
-            )
-        )
-
-    }
-
-    // Unix Milliseconds to date in string
-    fun getDateToString(time: Long): String {
-        val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(dateFormat)
-        return formatter.format(
-            ZonedDateTime.ofInstant(
-                Instant.ofEpochMilli(time),
-                ZoneId.of("UTC")
-            )
-        )
     }
 }
