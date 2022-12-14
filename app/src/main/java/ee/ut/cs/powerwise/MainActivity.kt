@@ -2,25 +2,47 @@ package ee.ut.cs.powerwise
 
 import android.os.Bundle
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.data.PricesDB
-import ee.ut.cs.powerwise.databinding.ActivityMainBinding
+import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : ComponentActivity() {
 
     private val baseURL = "https://dashboard.elering.ee/api/nps/price"
-    private lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContent {
+            PowerWiseTheme {
+                // A surface container using the 'background' color from the theme
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    Greeting("Android")
+                }
+                PriceChart()
+            }
+        }
 
         // TODO - Check whether data is already in db or note before making a request
         getNextDay()
@@ -98,9 +120,72 @@ class MainActivity : AppCompatActivity() {
             // add all of the data to db
             dao.addData(price)
         }
-        val prices = dao.loadAllPrices()
-        for (price in prices) {
-            Log.i("DB_Data", price.price.toString() + " " + price.datetime.toString())
-        }
+    }
+
+    data class Bar(val value: Float, val color: Color)
+}
+
+fun Float.mapValueToDifferentRange(
+    inMin: Float,
+    inMax: Float,
+    outMin: Float,
+    outMax: Float
+) = (this - inMin) * (outMax - outMin) / (inMax - inMin) + outMin
+
+@Composable
+fun PriceChart(modifier: Modifier = Modifier) {
+    // our values to draw
+    val bars = listOf(
+        MainActivity.Bar(10f, Color.Cyan),
+        MainActivity.Bar(20f, Color.Cyan),
+        MainActivity.Bar(30f, Color.Cyan),
+        MainActivity.Bar(40f, Color.Cyan),
+        MainActivity.Bar(10f, Color.Cyan)
+    )
+    val maxValue = bars.maxOf { it.value } // find max value
+
+    // create Box with canvas
+    Box(
+        modifier = modifier
+            .drawBehind { // we use drawBehind() method to create canvas
+
+                bars.forEachIndexed { index, bar ->
+                    // calculate left and top coordinates in pixels
+                    val left = index
+                        .toFloat()
+                        .mapValueToDifferentRange(
+                            inMin = 0f,
+                            inMax = bars.size.toFloat(),
+                            outMin = 0f,
+                            outMax = size.width
+                        )
+                    val top = bar.value
+                        .mapValueToDifferentRange(
+                            inMin = 0f,
+                            inMax = maxValue,
+                            outMin = size.height,
+                            outMax = 0f
+                        )
+
+                    // draw the bars
+                    drawRect(
+                        color = bar.color,
+                        topLeft = Offset(left, top),
+                        size = Size(50f, size.height - top)
+                    )
+                }
+            })
+}
+
+@Composable
+fun Greeting(name: String) {
+    Text(text = "Hello $name!")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    PowerWiseTheme {
+        Greeting("Android")
     }
 }
