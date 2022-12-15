@@ -5,12 +5,14 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.google.gson.JsonObject
 import com.koushikdutta.ion.Ion
+import ee.ut.cs.powerwise.components.CurrentPrice
 import ee.ut.cs.powerwise.components.PriceChart
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
@@ -43,7 +45,10 @@ class MainActivity : ComponentActivity() {
                     val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
-                    PriceChart(data, true)
+                    Column(Modifier.fillMaxSize()){
+                        PriceChart(data, true)
+                        CurrentPrice(25.0)
+                    }
                 }
             }
         }
