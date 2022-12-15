@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.util.*
 
 class TimeHelpers {
     companion object {
@@ -14,15 +15,15 @@ class TimeHelpers {
          * Converts UNIX timestamp to ZonedDateTime of UTC timezone
          */
         fun getToZonedDateTime(time: Long): ZonedDateTime {
-            return ZonedDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.of("UTC"))
+            return ZonedDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.systemDefault() )
         }
 
         private fun formatUnixTime(time: Long, format: String): String {
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(format)
             return formatter.format(
                 ZonedDateTime.ofInstant(
-                    Instant.ofEpochMilli(time),
-                    ZoneId.of("UTC")
+                    Instant.ofEpochSecond(time),
+                    ZoneId.systemDefault()
                 )
             )
         }

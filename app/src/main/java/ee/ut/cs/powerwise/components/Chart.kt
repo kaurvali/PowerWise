@@ -1,10 +1,10 @@
 package ee.ut.cs.powerwise.components
 
 import android.graphics.Paint
+import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -14,42 +14,29 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.*
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.core.graphics.ColorUtils
+import ee.ut.cs.powerwise.data.PriceEntity
+import ee.ut.cs.powerwise.utils.TimeHelpers
+import kotlin.math.roundToInt
 
 
-@Preview
 @Composable
-fun PreviewChart() {
+fun PriceChart(priceArray: Array<PriceEntity>) {
+
+    // 100% price
+    val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble {it.price}).price
     val map = mutableMapOf<String, Float>()
-    // peab olema protsentides
-    map["00"] = 0.1F
-    map["01"] = 0.2F
-    map["02"] = 0.2F
-    map["03"] = 0.1F
-    map["04"] = 0.3F
-    map["05"] = 0.4F
-    map["06"] = 0.2F
-    map["07"] = 0.5F
-    map["08"] = 0.6F
-    map["09"] = 0.7F
-    map["10"] = 0.7F
-    map["11"] = 0.8F
-    map["12"] = 0.95F
-    map["13"] = 0.9F
-    map["14"] = 0.84F
-    map["15"] = 0.74F
-    map["16"] = 0.8F
-    map["17"] = 0.7F
-    map["18"] = 0.6F
-    map["19"] = 0.5F
-    map["20"] = 0.4F
-    map["21"] = 0.45F
-    map["22"] = 0.6F
-    map["23"] = 1.0F
+    val prices = mutableMapOf<String, Double>()
+
+    for (element in priceArray){
+        val convertedDate = TimeHelpers.getTimeToString(element.datetime, "HH")
+        Log.i("DBDATA", "$element $convertedDate")
+        prices[convertedDate] = (element.price/10*100).roundToInt() / 100.0 // Teeme hinna senti/kwh
+        map[convertedDate] = (element.price/maxPrice).toFloat()
+    }
 
     Column(
         modifier = Modifier
@@ -60,6 +47,7 @@ fun PreviewChart() {
     ) {
         Chart(
             data = map,
+            values = prices,
             height = 200.dp
         )
     }
@@ -68,6 +56,7 @@ fun PreviewChart() {
 @Composable
 fun Chart(
     data: MutableMap<String, Float>,
+    values : MutableMap<String, Double>,
     barCornersRadius: Float = 25f,
     barColor: Color = MaterialTheme.colorScheme.tertiary,
     barWidth: Float = 30f,
@@ -86,7 +75,7 @@ fun Chart(
     var chosenBarKey by remember {
         mutableStateOf("")
     }
-    
+
     Canvas(modifier = Modifier
         .fillMaxSize()
         .height(height)
@@ -186,7 +175,7 @@ fun Chart(
                     }
 
                     drawContext.canvas.nativeCanvas.drawText(
-                        item.value.toString(),
+                        values[chosenBarKey].toString(),
                         chosenTopLeft.x + 25,
                         chosenTopLeft.y - 50,
                         paint
