@@ -44,6 +44,11 @@ class TimeHelpers {
         fun getDateToString(time: Long, format: String?): String {
             return formatUnixTime(time, format ?: dateFormat)
         }
+
+        fun getCurrentHr(): String {
+            val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern("HH")
+            return formatter.format(ZonedDateTime.now())
+        }
     }
 
 }

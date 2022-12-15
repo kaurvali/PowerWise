@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
                     val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
-                    PriceChart(data)
+                    PriceChart(data, true)
                 }
             }
         }

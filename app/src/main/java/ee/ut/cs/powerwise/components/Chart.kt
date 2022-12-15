@@ -24,7 +24,7 @@ import kotlin.math.roundToInt
 
 
 @Composable
-fun PriceChart(priceArray: Array<PriceEntity>) {
+fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
 
     // 100% price
     val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble {it.price}).price
@@ -48,6 +48,8 @@ fun PriceChart(priceArray: Array<PriceEntity>) {
         Chart(
             data = map,
             values = prices,
+            highlighted = TimeHelpers.getCurrentHr(),
+            current = current,
             height = 200.dp
         )
     }
@@ -57,8 +59,11 @@ fun PriceChart(priceArray: Array<PriceEntity>) {
 fun Chart(
     data: MutableMap<String, Float>,
     values : MutableMap<String, Double>,
+    highlighted: String,
+    current: Boolean,
     barCornersRadius: Float = 25f,
     barColor: Color = MaterialTheme.colorScheme.tertiary,
+    highBarColor: Color = MaterialTheme.colorScheme.primary,
     barWidth: Float = 30f,
     height: Dp,
     labelOffset: Float = 60f,
@@ -115,13 +120,17 @@ fun Chart(
             var chosenTopLeft: Offset = Offset(x=0f, y=0f)
 
             for (item in data) {
+                var color = barColor
                 val topLeft = Offset(
                     x = spaceStep,
                     y = size.height - item.value * barScale - labelOffset
                 )
                 //--------------------(draw bars)--------------------//
+                if (item.key == highlighted && current){
+                    color = highBarColor
+                }
                 drawRoundRect(
-                    color = barColor,
+                    color = color,
                     topLeft = topLeft,
                     size = Size(
                         width = barWidth,
