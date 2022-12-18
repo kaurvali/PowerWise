@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -13,9 +14,8 @@ import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.components.*
 import ee.ut.cs.powerwise.data.network.DataFetchers
 import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
-import java.time.LocalTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
+import java.time.*
+import java.util.TimeZone
 
 class MainActivity : ComponentActivity() {
 
@@ -40,15 +40,38 @@ class MainActivity : ComponentActivity() {
                 ) {
                     // TODO - MAKE DYNAMIC
                     // this is just a demonstrator
-                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-                    val data = model.getInRange(startTime, endTime)
-                    Column(Modifier.fillMaxSize()){
+                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN)
+                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX)
+                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    var data = model.getInRange(startTime, endTime)
+                    Column(Modifier.fillMaxSize()) {
                         Header()
                         Info()
-                        DateSelector("12.12.2022")
                         PriceChart(data, true)
-                        CurrentPrice(25.0)
+                        DateSelector { chosenDate ->
+                            dataFetcher.getAtDate(
+                                ZonedDateTime.of(
+                                    LocalDateTime.of(
+                                        chosenDate,
+                                        LocalTime.now()
+                                    ), ZoneId.of("UTC")
+                                )
+                            )
+                            data = model.getInRange(
+                                ZonedDateTime.of(
+                                    chosenDate,
+                                    LocalTime.MIN,
+                                    TimeZone.getDefault().toZoneId()
+                                ).toEpochSecond(),
+                                ZonedDateTime.of(
+                                    chosenDate,
+                                    LocalTime.MAX,
+                                    TimeZone.getDefault().toZoneId()
+                                ).toEpochSecond()
+                            )
+                        }
+                        CurrentPrice(d)
                     }
                 }
             }

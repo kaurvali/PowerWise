@@ -1,13 +1,20 @@
 package ee.ut.cs.powerwise.components
 
+
+import android.app.DatePickerDialog
+import android.util.Log
+import android.widget.DatePicker
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -16,11 +23,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
 import ee.ut.cs.powerwise.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 // TODO - MAKE BUTTONS WORK
 @Composable
-fun DateSelector(date: String) {
+fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), callback: (date: LocalDate) -> Unit) {
+    val showDatePicker = remember {
+        mutableStateOf(false)
+    }
+    val context = LocalContext.current
+    val currentDate = LocalDate.now()
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -41,8 +56,23 @@ fun DateSelector(date: String) {
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(vertical = 10.dp)
-                .width(140.dp),
-            fontSize = 20.sp
+                .width(140.dp)
+                .clickable {
+                    showDatePicker.value = !showDatePicker.value
+
+                    val datePicker = DatePickerDialog(
+                        context,
+                        { _: DatePicker, year: Int, month: Int, day: Int ->
+                            Log.i("UIElements", "Chosen date $year $month $day")
+                            callback(LocalDate.of(year, month+1, day))
+                        },
+                        currentDate.year,
+                        currentDate.monthValue - 1,
+                        currentDate.dayOfMonth
+                    )
+                    datePicker.show()
+                },
+            fontSize = 20.sp,
         )
         Spacer(
             modifier = Modifier
@@ -58,7 +88,12 @@ fun DateSelector(date: String) {
 @Preview
 @Composable
 fun PreviewDateSelector() {
-    DateSelector("12.12.2022")
+    DateSelector("12.12.2022",{})
+}
+
+@Composable
+fun ChartModule() {
+
 }
 
 
@@ -113,7 +148,7 @@ fun Info() {
 fun Header() {
     Image(
         modifier = Modifier
-            .padding(start = 30.dp, end=30.dp, top=15.dp)
+            .padding(start = 30.dp, end = 30.dp, top = 15.dp)
             .fillMaxWidth(),
         painter = painterResource(id = R.drawable.powerwise),
         contentDescription = stringResource(id = R.string.app_name)

@@ -28,4 +28,9 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
         return db.getPriceDao().loadInRange(start, end)
     }
 
+    fun getForTime(time: Long): PriceEntity {
+        val db = PricesDB.getInstance(app)
+        return db.getPriceDao().loadPriceForTime(time - time % HOUR_SECONDS)
+    }
+
 }
