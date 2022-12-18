@@ -20,12 +20,18 @@ import androidx.compose.ui.zIndex
 import androidx.core.graphics.ColorUtils
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.utils.TimeHelpers
+import ee.ut.cs.powerwise.utils.Utils
+import java.util.*
+import kotlin.Comparator
 import kotlin.math.roundToInt
 
 
 @Composable
 fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
 
+    if (priceArray.isEmpty()) {
+        return
+    }
     // 100% price
     val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble {it.price}).price
     val map = mutableMapOf<String, Float>()
@@ -34,7 +40,7 @@ fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
     for (element in priceArray){
         val convertedDate = TimeHelpers.getTimeToString(element.datetime, "HH")
         Log.i("DBDATA", "$element $convertedDate")
-        prices[convertedDate] = (element.price/10*100).roundToInt() / 100.0 // Teeme hinna senti/kwh
+        prices[convertedDate] = Utils.convertmWhtokWh(element.price) // Teeme hinna senti/kwh
         map[convertedDate] = (element.price/maxPrice).toFloat()
     }
 

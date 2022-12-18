@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Powerwise"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
             android:name=".MainActivity"
@@ -27,6 +28,18 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <receiver
+            android:name=".widget.PowerWiseWidgetReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widget" />
+        </receiver>
     </application>
 
 </manifest>

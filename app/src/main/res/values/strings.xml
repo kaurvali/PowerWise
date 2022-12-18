@@ -1,3 +1,7 @@
 <resources>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="app_widget_description">Energy price widget</string>
+    <string name="title_activity_app_widget">AppWidget</string>
     <string name="app_name">PowerWise</string>
 </resources>

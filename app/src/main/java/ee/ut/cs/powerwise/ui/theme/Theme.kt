@@ -5,7 +5,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.Composable
-import ee.ut.cs.powerwise.ui.theme.*
 
 
 private val LightColors = lightColorScheme(
