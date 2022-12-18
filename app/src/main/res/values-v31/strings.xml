@@ -14,5 +14,8 @@
     <string name="DatePicker_datestring_format">dd.MM.yyyy</string>
     <string name="PowerWise_calculator">Calculator</string>
     <string name="Calculator_back_text">Back</string>
-    <string name="Calculator_help_text">Please choose the number of hours for which you\'d like to calculate</string>
+    <string name="Calculator_help_text">Please choose the usage time of the device</string>
+    <string name="Calculator_optimal_time_text">The most optimal time to use energy is from %1d:00 to %2d:00</string>
+    <string name="Calculator_energy_consumption_text">Please enter the energy consumption in W of the device you\'d like to know the price of electricity for:</string>
+    <string name="Calculator_average_price_text">The use of this product will cost you on average %1f €</string>
 </resources>

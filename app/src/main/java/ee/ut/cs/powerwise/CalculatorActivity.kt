@@ -16,14 +16,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ee.ut.cs.powerwise.data.PriceEntity
-import ee.ut.cs.powerwise.data.network.DataFetchers
 import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
 import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 class CalculatorActivity : ComponentActivity() {
-    lateinit var dataFetcher: DataFetchers
     private val model: MainViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +34,7 @@ class CalculatorActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Column(Modifier.fillMaxSize()) {
-                        calculator()
+                        Calculator()
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
@@ -61,9 +59,10 @@ class CalculatorActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun calculator() {
+    fun Calculator() {
         val hours = remember { mutableStateOf(0) }
         val energyCost = remember { mutableStateOf(0) }
+        val calculatedPrice = remember { mutableStateOf(0.0) }
         val bestTimeBeginning = calculateOptimalTime(hours.value)
         val bestTimeEnding = (bestTimeBeginning + hours.value) % 24
         val averagePrice = model.getAveragePrice(
@@ -71,7 +70,7 @@ class CalculatorActivity : ComponentActivity() {
             ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         )
         Log.i("AVERAGE", "$averagePrice")
-        val calculatedPrice = (energyCost.value / 1000) * hours.value * (averagePrice / 1000.0)
+        calculatedPrice.value = (energyCost.value / 1000) * hours.value * (averagePrice / 1000.0)
         MaterialTheme {
             Column {
                 Text(
@@ -91,7 +90,7 @@ class CalculatorActivity : ComponentActivity() {
                     }
                 )
                 Text(
-                    text = "Please enter the energy consumption in W of the device you'd like to know the price of electricity for:",
+                    text = stringResource(R.string.Calculator_energy_consumption_text),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -107,11 +106,11 @@ class CalculatorActivity : ComponentActivity() {
                     }
                 )
                 Text(
-                    text = "The most optimal time to use energy is from $bestTimeBeginning:00 to $bestTimeEnding:00",
+                    text = stringResource(R.string.Calculator_optimal_time_text,bestTimeBeginning, bestTimeEnding),
                     modifier = Modifier.padding(16.dp)
                 )
                 Text(
-                    text = "The use of this product will cost you on average $calculatedPrice €",
+                    text = stringResource(R.string.Calculator_average_price_text, calculatedPrice.value),
                     modifier = Modifier.padding(16.dp))
 
             }
@@ -119,8 +118,6 @@ class CalculatorActivity : ComponentActivity() {
     }
 
     private fun calculateOptimalTime(value: Int): Int {
-        //val startTime: Long = ZonedDateTime.now() .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-        //val endTime: Long = ZonedDateTime.now().plusHours(24).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         val data = model.getInRange(startTime, endTime)
