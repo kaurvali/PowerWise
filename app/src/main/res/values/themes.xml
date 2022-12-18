@@ -6,5 +6,7 @@
         <item name="android:padding">16dp</item>
         <item name="android:background">@drawable/widget_background</item>
     </style>
-    <style name="Theme.Powerwise" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Powerwise" parent="@style/Theme.Material3.DayNight.NoActionBar">
+
+    </style>
 </resources>
