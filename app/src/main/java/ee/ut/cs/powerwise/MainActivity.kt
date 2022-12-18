@@ -16,6 +16,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.components.*
@@ -28,7 +29,6 @@ class MainActivity : ComponentActivity() {
 
     lateinit var dataFetcher: DataFetchers
     val model: MainViewModel by viewModels()
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.dataFetcher = DataFetchers(this.applicationContext, model)

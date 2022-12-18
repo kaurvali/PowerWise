@@ -32,4 +32,9 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
         return db.getPriceDao().loadPriceForTime(time - time % 3600)?.price
     }
 
+    fun getAveragePrice(start: Long, end: Long): Long {
+        val db = PricesDB.getInstance(app)
+        return db.getPriceDao().loadAveragePrice(start, end)
+    }
+
 }

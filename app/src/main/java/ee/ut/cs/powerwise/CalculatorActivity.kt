@@ -35,7 +35,7 @@ class CalculatorActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     Column(Modifier.fillMaxSize()) {
-                        SimpleCalculator()
+                        calculator()
                         Row(
                             horizontalArrangement = Arrangement.Center,
                             verticalAlignment = Alignment.CenterVertically,
@@ -60,14 +60,21 @@ class CalculatorActivity : ComponentActivity() {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun SimpleCalculator() {
+    fun calculator() {
         val hours = remember { mutableStateOf(0) }
+        val energyCost = remember { mutableStateOf(0) }
         val bestTimeBeginning = calculateOptimalTime(hours.value)
-        val bestTimeEnding = bestTimeBeginning + hours.value
+        val bestTimeEnding = (bestTimeBeginning + hours.value) % 24
+        val averagePrice = model.getAveragePrice(
+            ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond(),
+            ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+        )
+        Log.i("AVERAGE", "$averagePrice")
+        val calculatedPrice = (energyCost.value / 1000) * hours.value * (averagePrice / 1000.0)
         MaterialTheme {
             Column {
                 Text(
-                    text = "Please choose the number of hours for which you'd like to calculate",
+                    text = "Please choose the usage time of the device",
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
@@ -83,26 +90,46 @@ class CalculatorActivity : ComponentActivity() {
                     }
                 )
                 Text(
+                    text = "Please enter the energy consumption in W of the device you'd like to know the price of electricity for:",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                )
+                TextField(
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .fillMaxWidth(),
+                    value = energyCost.value.toString(),
+                    onValueChange = {
+                        if (it == "") energyCost.value = 0
+                        else energyCost.value = it.toInt()
+                    }
+                )
+                Text(
                     text = "The most optimal time to use energy is from $bestTimeBeginning:00 to $bestTimeEnding:00",
                     modifier = Modifier.padding(16.dp)
                 )
+                Text(
+                    text = "The use of this product will cost you on average $calculatedPrice €",
+                    modifier = Modifier.padding(16.dp))
+
             }
         }
     }
 
     private fun calculateOptimalTime(value: Int): Int {
-        val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN)
-            .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-        val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX)
-            .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+        //val startTime: Long = ZonedDateTime.now() .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+        //val endTime: Long = ZonedDateTime.now().plusHours(24).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+        val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+        val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         val data = model.getInRange(startTime, endTime)
-        val minimum = data?.let { findMinAvgSubarray(it.size, value, data) } ?: -1
-        Log.i("CalculatorActivity", "Minimum $minimum")
-
-        return minimum
+        if (data != null) {
+            return findMinAvg(data.size, value, data)
+        }
+        return 0
     }
 
-    private fun findMinAvgSubarray(n: Int, k: Int, data: Array<PriceEntity>): Int {
+    private fun findMinAvg(n: Int, k: Int, data: Array<PriceEntity>): Int {
         if (n < k) return -1
         var resIndex = 0
         var currSum = 0.0

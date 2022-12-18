@@ -6,6 +6,7 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import androidx.glance.appwidget.state.updateAppWidgetState
 import androidx.glance.appwidget.updateAll
 import androidx.work.*
+import androidx.work.CoroutineWorker
 import ee.ut.cs.powerwise.data.PricesDB
 import ee.ut.cs.powerwise.data.network.DataFetchers
 import ee.ut.cs.powerwise.utils.Utils
