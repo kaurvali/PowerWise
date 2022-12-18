@@ -1,11 +1,8 @@
 package ee.ut.cs.powerwise.components
 
 
-import android.app.DatePickerDialog
-import android.util.Log
-import android.widget.DatePicker
 import androidx.compose.foundation.Image
-import android.content.Intent
+
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,8 +11,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -24,18 +19,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.platform.LocalContext
+import com.google.android.material.datepicker.MaterialDatePicker
+import ee.ut.cs.powerwise.LocalFragmentManagerProvider
 import ee.ut.cs.powerwise.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-// TODO - MAKE BUTTONS WORK
 @Composable
 fun DateSelector(date: LocalDate = LocalDate.now(), callback: (date: LocalDate) -> Unit) {
-    val showDatePicker = remember {
-        mutableStateOf(false)
-    }
-    val context = LocalContext.current
+    val fragmentManager = LocalFragmentManagerProvider.current
+    val selectDateText = stringResource(id = R.string.datePicker_select_date)
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -46,31 +39,31 @@ fun DateSelector(date: LocalDate = LocalDate.now(), callback: (date: LocalDate) 
         Button(modifier = Modifier,
             onClick = {
                 callback(date.minusDays(1))
-            }) { Text("Prev") }
+            }) { Text(stringResource(R.string.Datepicker_previous)) }
         Spacer(
             modifier = Modifier
                 .width(16.dp)
         )
         Text(
-            text = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
+            text = date.format(DateTimeFormatter.ofPattern(stringResource(R.string.DatePicker_datestring_format))),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(vertical = 10.dp)
                 .width(140.dp)
                 .clickable {
-                    showDatePicker.value = !showDatePicker.value
+                    fragmentManager?.let {
+                        val datePicker =
+                            MaterialDatePicker.Builder
+                                .datePicker()
+                                .setTitleText(selectDateText)
+                                .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+                                .build()
+                        datePicker.addOnPositiveButtonClickListener {
+                            callback(LocalDate.ofEpochDay(it / 86400000))
+                        }
+                        datePicker.show(fragmentManager,selectDateText)
+                    }
 
-                    val datePicker = DatePickerDialog(
-                        context,
-                        { _: DatePicker, year: Int, month: Int, day: Int ->
-                            Log.i("UIElements", "Chosen date $year $month $day")
-                            callback(LocalDate.of(year, month+1, day))
-                        },
-                        date.year,
-                        date.monthValue - 1,
-                        date.dayOfMonth
-                    )
-                    datePicker.show()
                 },
             fontSize = 20.sp,
         )
@@ -81,16 +74,9 @@ fun DateSelector(date: LocalDate = LocalDate.now(), callback: (date: LocalDate) 
         Button(modifier = Modifier,
             onClick = {
                 callback(date.plusDays(1))
-            }) { Text("Next") }
+            }) { Text(stringResource(R.string.Datepicker_next)) }
     }
 }
-
-@Preview
-@Composable
-fun PreviewDateSelector() {
-    DateSelector(LocalDate.now(),{})
-}
-
 
 @Composable
 fun CurrentPrice(price: Double?) {
@@ -100,7 +86,7 @@ fun CurrentPrice(price: Double?) {
             .padding(start = 30.dp, end = 30.dp, bottom = 20.dp)
     ) {
         Text(
-            "Hetkene hind",
+            stringResource(R.string.CurrentPrice_text),
             modifier = Modifier
                 .padding(bottom = 3.dp),
             textAlign = TextAlign.Right
@@ -148,5 +134,4 @@ fun Header() {
         painter = painterResource(id = R.drawable.powerwise),
         contentDescription = stringResource(id = R.string.app_name)
     )
-
 }

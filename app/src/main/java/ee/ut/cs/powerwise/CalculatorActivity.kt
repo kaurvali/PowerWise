@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.data.network.DataFetchers
@@ -49,7 +50,7 @@ class CalculatorActivity : ComponentActivity() {
                                     )
                                 )
                             }) {
-                                Text(text = "Tagasi")
+                                Text(text = getString(R.string.Calculator_back_text))
                             }
                         }
                     }
@@ -67,7 +68,7 @@ class CalculatorActivity : ComponentActivity() {
         MaterialTheme {
             Column {
                 Text(
-                    text = "Please choose the number of hours for which you'd like to calculate",
+                    text = stringResource(R.string.Calculator_help_text),
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)

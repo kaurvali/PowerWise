@@ -4,6 +4,7 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjuster
 
 class TimeHelpers {
     companion object {
@@ -17,7 +18,7 @@ class TimeHelpers {
             return ZonedDateTime.ofInstant(Instant.ofEpochSecond(time), ZoneId.systemDefault())
         }
 
-        private fun formatUnixTime(time: Long, format: String): String {
+        fun formatUnixTime(time: Long, format: String): String {
             val formatter: DateTimeFormatter = DateTimeFormatter.ofPattern(format)
             return formatter.format(
                 ZonedDateTime.ofInstant(
@@ -27,6 +28,11 @@ class TimeHelpers {
             )
         }
 
+
+        fun getTodayMinMaxTime(adjuster: TemporalAdjuster): ZonedDateTime {
+            return ZonedDateTime.now().with(adjuster)
+                .withZoneSameInstant(ZoneId.of("UTC"))
+        }
 
         /**
          *  Converts UNIX timestamp to a specific time format.
