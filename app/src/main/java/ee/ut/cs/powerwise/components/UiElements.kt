@@ -1,18 +1,24 @@
 package ee.ut.cs.powerwise.components
 
+import android.content.Intent
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import ee.ut.cs.powerwise.CalculatorActivity
+import ee.ut.cs.powerwise.MainActivity
 
 
 // TODO - MAKE BUTTONS WORK
@@ -57,7 +63,6 @@ fun DateSelector(date: String) {
 fun PreviewDateSelector() {
     DateSelector("12.12.2022")
 }
-
 
 @Composable
 fun CurrentPrice(price: Double) {

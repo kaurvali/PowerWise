@@ -1,13 +1,16 @@
 package ee.ut.cs.powerwise
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.components.CurrentPrice
@@ -42,13 +45,31 @@ class MainActivity : ComponentActivity() {
                 ) {
                     // TODO - MAKE DYNAMIC
                     // this is just a demonstrator
-                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN)
+                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX)
+                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
-                    Column(Modifier.fillMaxSize()){
-                        //DateSelector("12.12.2022")
+                    Column(Modifier.fillMaxSize()) {
+                        DateSelector("12.12.2022")
                         PriceChart(data, true)
                         CurrentPrice(25.0)
+                        Row(
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Button(onClick = {
+                                startActivity(
+                                    Intent(
+                                        this@MainActivity,
+                                        CalculatorActivity::class.java
+                                    )
+                                )
+                            }) {
+                                Text(text = "Kalkulaator")
+                            }
+                        }
                     }
                 }
             }

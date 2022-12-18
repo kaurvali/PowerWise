@@ -28,7 +28,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
+        <activity android:name=".CalculatorActivity"/>
         <receiver
             android:name=".widget.PowerWiseWidgetReceiver"
             android:exported="false">
