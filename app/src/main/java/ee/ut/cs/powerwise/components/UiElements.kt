@@ -30,12 +30,11 @@ import java.time.format.DateTimeFormatter
 
 // TODO - MAKE BUTTONS WORK
 @Composable
-fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy")), callback: (date: LocalDate) -> Unit) {
+fun DateSelector(date: LocalDate = LocalDate.now(), callback: (date: LocalDate) -> Unit) {
     val showDatePicker = remember {
         mutableStateOf(false)
     }
     val context = LocalContext.current
-    val currentDate = LocalDate.now()
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
@@ -45,14 +44,14 @@ fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPatte
     ) {
         Button(modifier = Modifier,
             onClick = {
-                //TODO - Make buttons work
+                callback(date.minusDays(1))
             }) { Text("Prev") }
         Spacer(
             modifier = Modifier
                 .width(16.dp)
         )
         Text(
-            text = date,
+            text = date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")),
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .padding(vertical = 10.dp)
@@ -66,9 +65,9 @@ fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPatte
                             Log.i("UIElements", "Chosen date $year $month $day")
                             callback(LocalDate.of(year, month+1, day))
                         },
-                        currentDate.year,
-                        currentDate.monthValue - 1,
-                        currentDate.dayOfMonth
+                        date.year,
+                        date.monthValue - 1,
+                        date.dayOfMonth
                     )
                     datePicker.show()
                 },
@@ -80,7 +79,7 @@ fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPatte
         )
         Button(modifier = Modifier,
             onClick = {
-                //TODO - Make buttons work
+                callback(date.plusDays(1))
             }) { Text("Next") }
     }
 }
@@ -88,17 +87,12 @@ fun DateSelector(date: String = LocalDate.now().format(DateTimeFormatter.ofPatte
 @Preview
 @Composable
 fun PreviewDateSelector() {
-    DateSelector("12.12.2022",{})
-}
-
-@Composable
-fun ChartModule() {
-
+    DateSelector(LocalDate.now(),{})
 }
 
 
 @Composable
-fun CurrentPrice(price: Double) {
+fun CurrentPrice(price: Double?) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -111,7 +105,7 @@ fun CurrentPrice(price: Double) {
             textAlign = TextAlign.Right
         )
         Text(
-            "$price senti/kWh",
+            "${price ?: "N/A"} senti/kWh",
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(50))

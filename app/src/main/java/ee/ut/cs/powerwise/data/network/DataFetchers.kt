@@ -14,10 +14,9 @@ class DataFetchers(
     val context: Context,
     val model: MainViewModel? = null,
     val baseURL: String = "https://dashboard.elering.ee/api/nps/price",
-    val callback: ((data: MutableList<PriceEntity>) -> Unit)? = null
 ) {
     // This method gets the price for the next day
-    fun getNextDay() {
+    fun getNextDay(callback: ((data: List<PriceEntity>) -> Unit)? = null) {
 
         val currentTime = ZonedDateTime.now()
         // Change the to the midnight of the next day and covert it to UTC
@@ -28,11 +27,11 @@ class DataFetchers(
             currentTime.with(LocalTime.MAX).plusDays(1).withZoneSameInstant(ZoneId.of("UTC"))
 
         // call out the API
-        makeRequest(startTime.toString(), endTime.toString())
+        makeRequest(startTime.toString(), endTime.toString(), callback)
     }
 
     // This method gets the price in a certain range
-    fun getLastDaysRange(days: Int) {
+    fun getLastDaysRange(days: Int, callback: ((data: List<PriceEntity>) -> Unit)? = null) {
         // the request can't be more than 365 days
         if (days <= 365) {
 
@@ -46,21 +45,21 @@ class DataFetchers(
                 currentTime.with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC"))
 
             // call out the API
-            makeRequest(startTime.toString(), endTime.toString())
+            makeRequest(startTime.toString(), endTime.toString(), callback)
         }
     }
 
     // This method gets the price on a certain day
-    fun getAtDate(date: ZonedDateTime) {
+    fun getAtDate(date: ZonedDateTime, callback: ((data: List<PriceEntity>) -> Unit)? = null) {
         val startTime: ZonedDateTime =
             date.with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC"))
         val endTime: ZonedDateTime = date.with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC"))
 
         // call out the API
-        makeRequest(startTime.toString(), endTime.toString())
+        makeRequest(startTime.toString(), endTime.toString(), callback)
     }
 
-    private fun makeRequest(startTime: String, endTime: String) {
+    private fun makeRequest(startTime: String, endTime: String, callback: ((data: List<PriceEntity>) -> Unit)? = null) {
         Log.i("HTTP TIMES", "$startTime $endTime")
         Ion.with(context)
             .load(baseURL)
@@ -73,7 +72,14 @@ class DataFetchers(
                     e.printStackTrace()
                 } else {
                     Log.i("HTTP Result", "Success")
-                    addToDB(result["data"] as JsonObject)
+                    val reqData = jsonObjectToPriceArray(result["data"] as JsonObject)
+                    if (model != null) {
+                        model.addData(*reqData.toTypedArray())
+                    }
+                    if (callback != null) {
+                        callback(reqData)
+                    }
+                    // addToDB(result["data"] as JsonObject)
                 }
             }
     }
@@ -97,6 +103,19 @@ class DataFetchers(
                 model.addData(price)
             }
         }
-        callback?.let { it(prices) }
+    }
+
+    private fun jsonObjectToPriceArray(data: JsonObject): List<PriceEntity> {
+        val ee = data["ee"].asJsonArray
+        val prices: MutableList<PriceEntity> = ArrayList()
+        for (time in ee) {
+            prices.add(
+                PriceEntity(
+                    time.asJsonObject["timestamp"].asLong,
+                    time.asJsonObject["price"].asDouble
+                )
+            )
+        }
+        return prices
     }
 }

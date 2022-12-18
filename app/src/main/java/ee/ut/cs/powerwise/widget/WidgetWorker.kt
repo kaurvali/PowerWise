@@ -37,12 +37,12 @@ class WidgetWorker(val appContext: Context, workerParams: WorkerParameters) :
 
     override suspend fun doWork(): Result {
         updateWidget(appContext, WidgetState.DataLoading())
-        val dataFetchers = DataFetchers(appContext) {
-            PricesDB.getInstance(appContext).getPriceDao().addData(*it.toTypedArray())
-        }
+        val dataFetchers = DataFetchers(appContext)
 
         return withContext(Dispatchers.IO) {
-            dataFetchers.getAtDate(ZonedDateTime.now())
+            dataFetchers.getAtDate(ZonedDateTime.now()) {
+                PricesDB.getInstance(appContext).getPriceDao().addData(*it.toTypedArray())
+            }
 
             createWidgetData()
             return@withContext Result.success()
@@ -67,7 +67,7 @@ class WidgetWorker(val appContext: Context, workerParams: WorkerParameters) :
         val currentUnixTime = System.currentTimeMillis() / 1000
         val currentUnixHour = currentUnixTime - currentUnixTime % HOUR_SECONDS
 
-        val currentPrice = db.loadPriceForTime(currentUnixHour)
+        val currentPrice = db.loadPriceForTime(currentUnixHour) ?: return
 
         val todayUnixStartTime =
             ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC"))
@@ -78,8 +78,8 @@ class WidgetWorker(val appContext: Context, workerParams: WorkerParameters) :
         val averagePrice =
             db.loadAveragePrice(todayUnixStartTime, System.currentTimeMillis() / 1000)
 
-        val nextHourPrice1 = db.loadPriceForTime(currentUnixHour + HOUR_SECONDS)
-        val nextHourPrice2 = db.loadPriceForTime(currentUnixHour + HOUR_SECONDS * 2)
+        val nextHourPrice1 = db.loadPriceForTime(currentUnixHour + HOUR_SECONDS) ?: return
+        val nextHourPrice2 = db.loadPriceForTime(currentUnixHour + HOUR_SECONDS * 2) ?: return
 
         updateWidget(
             appContext,
