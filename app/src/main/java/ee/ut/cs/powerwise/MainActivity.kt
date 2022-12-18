@@ -1,12 +1,10 @@
 package ee.ut.cs.powerwise
 
 import android.content.Intent
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
@@ -18,7 +16,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.material3.Text
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.components.*
@@ -38,8 +35,6 @@ class MainActivity : ComponentActivity() {
         // TODO - Check whether data is already in db or note before making a request etc
         Ion.getDefault(applicationContext).conscryptMiddleware.enable(false)
         // Add current date data to the db
-        dataFetcher.getAtDate(ZonedDateTime.now())
-
         val currentZonedTime = ZonedDateTime.now().with(LocalTime.MIN)
             .withZoneSameInstant(ZoneId.of("UTC"))
         val startTime: Long = currentZonedTime.toEpochSecond()

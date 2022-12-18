@@ -21,9 +21,10 @@ class MainViewModel(private val app: Application) : AndroidViewModel(app) {
         db.getPriceDao().addData(*priceEntities)
     }
 
-    fun getInRange(start: Long, end: Long) {
+    fun getInRange(start: Long, end: Long): Array<PriceEntity>? {
         val db = PricesDB.getInstance(app)
         priceArray.value = db.getPriceDao().loadInRange(start, end)
+        return priceArray.value
     }
 
     fun getForTime(time: Long): Double? {

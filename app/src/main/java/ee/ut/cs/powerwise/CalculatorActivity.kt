@@ -96,8 +96,8 @@ class CalculatorActivity : ComponentActivity() {
         val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX)
             .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
         val data = model.getInRange(startTime, endTime)
-        val minimum = findMinAvgSubarray(data.size, value, data)
-        Log.i("DATA", "HAHA " + minimum)
+        val minimum = data?.let { findMinAvgSubarray(it.size, value, data) } ?: -1
+        Log.i("CalculatorActivity", "Minimum $minimum")
 
         return minimum
     }
