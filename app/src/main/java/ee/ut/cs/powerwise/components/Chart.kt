@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
@@ -21,19 +23,13 @@ import androidx.core.graphics.ColorUtils
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.utils.TimeHelpers
 import ee.ut.cs.powerwise.utils.Utils
-import java.util.*
 import kotlin.Comparator
-import kotlin.math.roundToInt
 
 
 @Composable
 fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
-
-    if (priceArray.isEmpty()) {
-        return
-    }
     // 100% price
-    val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble {it.price}).price
+    val maxPrice: Double = if (priceArray.isEmpty()) -1.0 else priceArray.maxWith(Comparator.comparingDouble {it.price}).price
     val map = mutableMapOf<String, Float>()
     val prices = mutableMapOf<String, Double>()
 
@@ -49,15 +45,21 @@ fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
             .fillMaxWidth()
             .height(
                 300.dp
-            )
+            ),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Chart(
-            data = map,
-            values = prices,
-            highlighted = TimeHelpers.getCurrentHr(),
-            current = current,
-            height = 200.dp
-        )
+        if (priceArray.isEmpty()) {
+            CircularProgressIndicator()
+        } else {
+            Chart(
+                data = map,
+                values = prices,
+                highlighted = TimeHelpers.getCurrentHr(),
+                current = current,
+                height = 200.dp
+            )
+        }
     }
 }
 
