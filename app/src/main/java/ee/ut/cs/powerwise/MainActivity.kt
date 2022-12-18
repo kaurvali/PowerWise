@@ -13,9 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.koushikdutta.ion.Ion
-import ee.ut.cs.powerwise.components.CurrentPrice
-import ee.ut.cs.powerwise.components.DateSelector
-import ee.ut.cs.powerwise.components.PriceChart
+import ee.ut.cs.powerwise.components.*
 import ee.ut.cs.powerwise.data.network.DataFetchers
 import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
 import java.time.LocalTime
@@ -45,12 +43,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     // TODO - MAKE DYNAMIC
                     // this is just a demonstrator
-                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN)
-                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
-                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX)
-                        .withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    val startTime: Long = ZonedDateTime.now().with(LocalTime.MIN).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
+                    val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
-                    Column(Modifier.fillMaxSize()) {
+                    Column(Modifier.fillMaxSize()){
+                        Header()
+                        Info()
                         DateSelector("12.12.2022")
                         PriceChart(data, true)
                         CurrentPrice(25.0)
