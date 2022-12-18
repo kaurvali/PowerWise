@@ -73,9 +73,7 @@ class DataFetchers(
                 } else {
                     Log.i("HTTP Result", "Success")
                     val reqData = jsonObjectToPriceArray(result["data"] as JsonObject)
-                    if (model != null) {
-                        model.addData(*reqData.toTypedArray())
-                    }
+                    model?.addData(*reqData.toTypedArray())
                     if (callback != null) {
                         callback(reqData)
                     }
