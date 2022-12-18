@@ -15,7 +15,7 @@ interface PriceDAO {
     fun loadInRange(startTime: Long, endTime: Long): Array<PriceEntity>
 
     @Query("SELECT * FROM prices WHERE datetime = :time LIMIT 1")
-    fun loadPriceForTime(time: Long): PriceEntity
+    fun loadPriceForTime(time: Long): PriceEntity?
 
     @Query("SELECT AVG(price) FROM prices WHERE datetime >= :startTime AND datetime <= :endTime")
     fun loadAveragePrice(startTime: Long, endTime: Long): Long

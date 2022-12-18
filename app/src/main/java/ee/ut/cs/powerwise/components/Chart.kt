@@ -35,7 +35,7 @@ fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
 
     for (element in priceArray) {
         val convertedDate = TimeHelpers.getTimeToString(element.datetime, "HH")
-        Log.i("DBDATA", "$element $convertedDate")
+        // Log.i("DBDATA", "$element $convertedDate")
         prices[convertedDate] = Utils.convertmWhtokWh(element.price) // Teeme hinna senti/kwh
         map[convertedDate] = (element.price / maxPrice).toFloat()
     }
