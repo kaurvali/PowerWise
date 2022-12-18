@@ -21,9 +21,6 @@ import androidx.core.graphics.ColorUtils
 import ee.ut.cs.powerwise.data.PriceEntity
 import ee.ut.cs.powerwise.utils.TimeHelpers
 import ee.ut.cs.powerwise.utils.Utils
-import java.util.*
-import kotlin.Comparator
-import kotlin.math.roundToInt
 
 
 @Composable
@@ -33,15 +30,15 @@ fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
         return
     }
     // 100% price
-    val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble {it.price}).price
+    val maxPrice: Double = priceArray.maxWith(Comparator.comparingDouble { it.price }).price
     val map = mutableMapOf<String, Float>()
     val prices = mutableMapOf<String, Double>()
 
-    for (element in priceArray){
+    for (element in priceArray) {
         val convertedDate = TimeHelpers.getTimeToString(element.datetime, "HH")
         Log.i("DBDATA", "$element $convertedDate")
         prices[convertedDate] = Utils.convertmWhtokWh(element.price) // Teeme hinna senti/kwh
-        map[convertedDate] = (element.price/maxPrice).toFloat()
+        map[convertedDate] = (element.price / maxPrice).toFloat()
     }
 
     Column(
@@ -64,7 +61,7 @@ fun PriceChart(priceArray: Array<PriceEntity>, current: Boolean) {
 @Composable
 fun Chart(
     data: MutableMap<String, Float>,
-    values : MutableMap<String, Double>,
+    values: MutableMap<String, Double>,
     highlighted: String,
     current: Boolean,
     barCornersRadius: Float = 25f,
@@ -123,7 +120,7 @@ fun Chart(
             }
 
             var spaceStep = 0f
-            var chosenTopLeft: Offset = Offset(x=0f, y=0f)
+            var chosenTopLeft: Offset = Offset(x = 0f, y = 0f)
 
             for (item in data) {
                 var color = barColor
@@ -131,8 +128,8 @@ fun Chart(
                     x = spaceStep,
                     y = size.height - item.value * barScale - labelOffset
                 )
-                //--------------------(draw bars)--------------------//
-                if (item.key == highlighted && current){
+                //-------------------- Draw bars --------------------//
+                if (item.key == highlighted && current) {
                     color = highBarColor
                 }
                 drawRoundRect(
@@ -144,7 +141,7 @@ fun Chart(
                     ),
                     cornerRadius = CornerRadius(barCornersRadius, barCornersRadius)
                 )
-                //--------------------(showing the x axis labels)--------------------//
+                //-------------------- Showing the x axis labels --------------------//
                 if (Integer.parseInt(item.key) % 2 == 0) {
                     drawContext.canvas.nativeCanvas.drawText(
                         item.key.toString(),
@@ -153,7 +150,7 @@ fun Chart(
                         paint
                     )
                 }
-                //--------------------(showing the bar label)--------------------//
+                //-------------------- Showing the bar label --------------------//
                 if (chosenBarKey == item.key) {
                     chosenTopLeft = topLeft
                 }
@@ -162,7 +159,7 @@ fun Chart(
             }
 
             for (item in data) {
-                //--------------------(showing the bar label)--------------------//
+                //-------------------- Showing the bar label --------------------//
                 if (chosenBarKey == item.key) {
                     val localLabelColor = Color(
                         ColorUtils.blendARGB(

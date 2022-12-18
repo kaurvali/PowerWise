@@ -11,6 +11,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import com.koushikdutta.ion.Ion
 import ee.ut.cs.powerwise.components.CurrentPrice
+import ee.ut.cs.powerwise.components.DateSelector
 import ee.ut.cs.powerwise.components.PriceChart
 import ee.ut.cs.powerwise.data.network.DataFetchers
 import ee.ut.cs.powerwise.ui.theme.PowerWiseTheme
@@ -45,6 +46,7 @@ class MainActivity : ComponentActivity() {
                     val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
                     Column(Modifier.fillMaxSize()){
+                        //DateSelector("12.12.2022")
                         PriceChart(data, true)
                         CurrentPrice(25.0)
                     }
@@ -58,6 +60,4 @@ class MainActivity : ComponentActivity() {
         super.onResume()
         model.refresh()
     }
-
-
 }
