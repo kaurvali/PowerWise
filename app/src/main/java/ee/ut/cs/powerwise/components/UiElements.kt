@@ -1,5 +1,6 @@
 package ee.ut.cs.powerwise.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,11 +10,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-
+import ee.ut.cs.powerwise.R
 
 // TODO - MAKE BUTTONS WORK
 @Composable
@@ -84,17 +87,36 @@ fun CurrentPrice(price: Double) {
     }
 }
 
-@Composable
-fun Logo() {
 
+@Preview
+@Composable
+fun Info() {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+    ) {
+        Text(
+            text = stringResource(R.string.info_text),
+            textAlign = TextAlign.Center,
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+            fontSize = 14.sp
+        )
+    }
 }
 
-@Composable
-fun Info(text: String) {
-
-}
-
+@Preview
 @Composable
 fun Header() {
+    Image(
+        modifier = Modifier
+            .padding(start = 30.dp, end=30.dp, top=15.dp)
+            .fillMaxWidth(),
+        painter = painterResource(id = R.drawable.powerwise),
+        contentDescription = stringResource(id = R.string.app_name)
+    )
 
 }

@@ -4,4 +4,6 @@
     <string name="app_widget_description">Energy price widget</string>
     <string name="title_activity_app_widget">AppWidget</string>
     <string name="app_name">PowerWise</string>
+    <string name="info_text">Here you can check out electricity prices and
+        use our calculator to save money when using appliances which use electricity.</string>
 </resources>
