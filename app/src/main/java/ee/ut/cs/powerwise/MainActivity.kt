@@ -46,7 +46,7 @@ class MainActivity : ComponentActivity() {
                     val endTime: Long = ZonedDateTime.now().with(LocalTime.MAX).withZoneSameInstant(ZoneId.of("UTC")).toEpochSecond()
                     val data = model.getInRange(startTime, endTime)
                     Column(Modifier.fillMaxSize()){
-                        //DateSelector("12.12.2022")
+                        DateSelector("12.12.2022")
                         PriceChart(data, true)
                         CurrentPrice(25.0)
                     }
