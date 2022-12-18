@@ -4,7 +4,9 @@ Kaur Vali, Siim Saaresalu, Merili Kõvask, Märten Kahu
 
 ### Github: https://github.com/kaurvali/PowerWise
 
-### What is PowerWise?
+---
+
+## What is PowerWise?
 PowerWise is a simple application to help you keep track of Nord Pool Spot electricity prices in
 Estonia.
 
@@ -25,7 +27,11 @@ and it needs access to the internet to communicate with the API.
 - TargetSDK: 33
 It has been tested on emulated Pixel 4 on API lvl 33.
 
-### Functional Blocks
+---
+
+---
+
+## Functional Blocks
 
 #### Which functional feature blocks does the project fulfil?
 The project currently has 4 functional blocks.
@@ -72,5 +78,40 @@ finishing touches to the UI.
 I think the first big challenge was creating the Jetpack composeapplication as this was not taught 
 in the course and had big changes in logic compared to the old one which made it really difficult to
 implement. The other really challenging one was the widget.
+
+
+
+
+---
+
+## OWASP REPORT
+
+### MSTG-CODE-5
+#### Requirements
+All third party components used by the mobile app, such as libraries and frameworks, are identified,
+and checked for known vulnerabilities.
+This application has multiple external dependencies, which are used, and they might have some issues
+related to them. These should be checks so that there are no weird issues.
+#### Testing
+To test this we used owasp:dependency-check-gradle to check the dependencies of the application.
+#### Fulfillment
+It seems like whe have quite a few dependencies with High to Medium severity. There are 
+issues with gson, apache commons, some kotlin jdk libraries and Room. In total there are 7 dependency
+issues but most of them are caused by sub-dependency issues.
+To fix the issues we need to look for better versions of those dependencies which have no issues
+according to the test.
+
+### MSTG-NETWORK-1
+#### Requirements
+Data is encrypted on the network using TLS. The secure channel is used consistently throughout the app.
+This is relevant as we have communication with and web API, which is used to get data over the web.
+#### Testing
+Firstly, all of the links used where checked for HTTPS. All of them passed. Then the API usage was checked
+to see whether the API calls were made safely. Then I captured some traffic and checked whether the
+data was encrypted or not. Then I checked if the cleartext traffic was enabled or not.
+#### Fulfillment
+It turns out that the application for the most part is secure as data was encrypted and secured using
+HTTPS connections. But the cleartext traffic is enabled,
+to fix that it should be disabled in the AndroidManifest.
 
 
