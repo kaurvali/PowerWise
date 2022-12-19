@@ -29,8 +29,6 @@ It has been tested on emulated Pixel 4 on API lvl 33.
 
 ---
 
----
-
 ## Functional Blocks
 
 #### Which functional feature blocks does the project fulfil?
@@ -50,8 +48,8 @@ widget which could be used on the home screen.
 #### Who worked on what? 
 - Kaur: Built the communication with API and the data flow and logic to the DB. Most of the UI
 elements and chart which displays prices.
-- Siim: Calculator
-- Merili:
+- Siim: Built the Calculator used for calculating electricity price.
+- Merili: Nothing? :D
 - Märten: Widget, refining the DB communication and application flow, made the date picker + chart update to be dynamic.
 
 #### What went well? 
@@ -78,9 +76,6 @@ finishing touches to the UI.
 I think the first big challenge was creating the Jetpack composeapplication as this was not taught 
 in the course and had big changes in logic compared to the old one which made it really difficult to
 implement. The other really challenging one was the widget.
-
-
-
 
 ---
 
