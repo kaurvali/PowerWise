@@ -52,7 +52,7 @@ widget which could be used on the home screen.
 elements and chart which displays prices.
 - Siim: Calculator
 - Merili:
-- Märten: Widget, refining the DB communication and application flow.
+- Märten: Widget, refining the DB communication and application flow, made the date picker + chart update to be dynamic.
 
 #### What went well? 
 We think that the application itself came out great. The idea was great and thanks to that it was
