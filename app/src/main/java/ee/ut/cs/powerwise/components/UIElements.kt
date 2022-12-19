@@ -22,6 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.google.android.material.datepicker.MaterialDatePicker
 import ee.ut.cs.powerwise.LocalFragmentManagerProvider
 import ee.ut.cs.powerwise.R
+import ee.ut.cs.powerwise.utils.Utils
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -80,6 +81,7 @@ fun DateSelector(date: LocalDate = LocalDate.now(), callback: (date: LocalDate) 
 
 @Composable
 fun CurrentPrice(price: Double?) {
+    val currentPrice = if (price != null) Utils.convertmWhtokWh(price).toString() else "N/A"
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -92,7 +94,7 @@ fun CurrentPrice(price: Double?) {
             textAlign = TextAlign.Right
         )
         Text(
-            "${price ?: "N/A"} senti/kWh",
+            "$currentPrice s/kWh",
             modifier = Modifier
                 .fillMaxWidth()
                 .border(2.dp, MaterialTheme.colorScheme.tertiary, shape = RoundedCornerShape(50))
